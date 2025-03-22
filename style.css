@@ -41,6 +41,13 @@ body {
     position: relative;
 }
 
+/* プレビューを指定サイズに合わせてスケーリング */
+.poster {
+    transform: scale(1); /* 初期状態のスケーリング */
+    transform-origin: top left; /* スケーリングの基準を左上に設定 */
+}
+
+
 /* テキスト（ポスター内） */
 .text {
     font-size: calc(2vh * (297 / 210));
@@ -143,6 +150,7 @@ td:focus {
     .preview {
         flex: 1; /* 余分なスペースを占める */
         height: auto;
+        padding: 20px 0;
     }
 
     /* 操作パネル */
