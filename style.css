@@ -1,5 +1,13 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
 /* ギャルっぽい背景 */
 body {
+    font-family: "M PLUS Rounded 1c", "Arial", sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -43,8 +51,10 @@ body {
 
 /* プレビューを指定サイズに合わせてスケーリング */
 .poster {
-    transform: scale(1); /* 初期状態のスケーリング */
-    transform-origin: top left; /* スケーリングの基準を左上に設定 */
+    transform: scale(1);
+    /* 初期状態のスケーリング */
+    transform-origin: top left;
+    /* スケーリングの基準を左上に設定 */
 }
 
 
@@ -53,7 +63,6 @@ body {
     font-size: calc(2vh * (297 / 210));
     font-weight: bold;
     color: #ff1493;
-    font-family: "Comic Sans MS", "Arial", sans-serif;
     text-shadow: 2px 2px 5px rgba(255, 20, 147, 0.5);
     white-space: nowrap;
 }
@@ -133,31 +142,45 @@ td:focus {
     background: #ffe6ee;
 }
 
+.logo {
+    width: 300px;
+    position: fixed;
+    /* 画面に固定 */
+    bottom: 20px;
+    /* 画面の下から20px */
+}
+
 /* 画面が狭いときは縦並びに */
 /* 画面が狭いときは縦並びに */
-@media (max-width: 1260px) {
+@media (max-width: 1000px) {
     .container {
         flex-direction: column;
-        height: auto; /* 自動調整 */
+        height: auto;
+        /* 自動調整 */
     }
 
-    .preview, .controls {
+    .preview,
+    .controls {
         width: 100%;
-        height: auto; /* 高さを自動調整 */
+        height: auto;
+        /* 高さを自動調整 */
     }
 
     /* ポスタープレビュー */
     .preview {
-        flex: 1; /* 余分なスペースを占める */
+        flex: 1;
+        /* 余分なスペースを占める */
         height: auto;
         padding: 20px 0;
     }
 
     /* 操作パネル */
     .controls {
-        flex: 1; /* 余分なスペースを占める */
+        flex: 1;
+        /* 余分なスペースを占める */
         height: auto;
-        overflow-y: auto; /* 操作パネル内がはみ出たらスクロール */
+        overflow-y: auto;
+        /* 操作パネル内がはみ出たらスクロール */
     }
 
     /* 全体レイアウトのスクロール設定 */
@@ -165,6 +188,12 @@ td:focus {
         margin: 0;
         padding: 0;
         height: 100%;
-        overflow-y: scroll; /* ページスクロール可能 */
+        overflow-y: scroll;
+        /* ページスクロール可能 */
+    }
+
+    .logo {
+        width: 300px;
+        position: static;
     }
 }

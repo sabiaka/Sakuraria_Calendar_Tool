@@ -4,8 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/1b3e5969a1455987.png" type="image/png">
     <title>サクラリアカレンダー ジェネレーター</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&family=Zen+Maru+Gothic&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
@@ -23,13 +28,12 @@
 
 
             <!-- PNG出力ボタン -->
-            <!-- PNG出力ボタン -->
             <button id="download-png" class="download-button">ポスターをPNGで保存</button>
 
 
             <!-- 日付選択 -->
-            <label for="week">📅 週を選択：</label>
-            <input type="week" id="week">
+            <label for="week">📅 週を選択</label>
+            <input type="week" id="week" onchange="updateCalendar()">
 
             <!-- 7×2の表 -->
             <table>
@@ -45,29 +49,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                    </tr>
+                    <tr id="week1"></tr>
+                    <tr id="week2"></tr>
                 </tbody>
             </table>
+
+
+            <img src="images/1b3e5969a1455987.png" alt="サクラリアのロゴ" class="logo">
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
