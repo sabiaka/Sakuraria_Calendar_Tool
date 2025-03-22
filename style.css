@@ -1,0 +1,162 @@
+/* ギャルっぽい背景 */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+    overflow: hidden;
+}
+
+/* 全体のレイアウト */
+.container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+/* 左側：プレビューポスター */
+.preview {
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff0f5;
+}
+
+/* ポスターの配置 */
+.poster {
+    width: 80%;
+    max-width: calc(90vh * (210 / 297));
+    max-height: calc(90vw * (297 / 210));
+    aspect-ratio: 210 / 297;
+    background: white;
+    border: 5px solid #ff66b2;
+    border-radius: 20px;
+    box-shadow: 0px 0px 15px rgba(255, 105, 180, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* テキスト（ポスター内） */
+.text {
+    font-size: calc(2vh * (297 / 210));
+    font-weight: bold;
+    color: #ff1493;
+    font-family: "Comic Sans MS", "Arial", sans-serif;
+    text-shadow: 2px 2px 5px rgba(255, 20, 147, 0.5);
+    white-space: nowrap;
+}
+
+/* 右側：操作パネル */
+.controls {
+    width: 30%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #ffe4e1;
+    box-shadow: -5px 0px 10px rgba(255, 105, 180, 0.3);
+}
+
+/* 見出し */
+h2 {
+    color: #ff1493;
+    font-size: 24px;
+    text-shadow: 1px 1px 5px rgba(255, 20, 147, 0.5);
+}
+
+/* ボタン */
+button {
+    background: #ff66b2;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 10px 0;
+    box-shadow: 0px 4px 6px rgba(255, 20, 147, 0.5);
+}
+
+button:hover {
+    background: #ff1493;
+}
+
+/* 日付選択 */
+input[type="week"] {
+    padding: 8px;
+    font-size: 16px;
+    border: 2px solid #ff66b2;
+    border-radius: 5px;
+    outline: none;
+}
+
+/* 表 */
+table {
+    width: 100%;
+    max-width: 350px;
+    border-collapse: collapse;
+    background: white;
+    margin-top: 10px;
+}
+
+th,
+td {
+    border: 2px solid #ff66b2;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background: #ffccdd;
+}
+
+td {
+    background: #fff;
+    cursor: pointer;
+}
+
+/* 入力セルを編集可能に */
+td:focus {
+    outline: none;
+    background: #ffe6ee;
+}
+
+/* 画面が狭いときは縦並びに */
+/* 画面が狭いときは縦並びに */
+@media (max-width: 1260px) {
+    .container {
+        flex-direction: column;
+        height: auto; /* 自動調整 */
+    }
+
+    .preview, .controls {
+        width: 100%;
+        height: auto; /* 高さを自動調整 */
+    }
+
+    /* ポスタープレビュー */
+    .preview {
+        flex: 1; /* 余分なスペースを占める */
+        height: auto;
+    }
+
+    /* 操作パネル */
+    .controls {
+        flex: 1; /* 余分なスペースを占める */
+        height: auto;
+        overflow-y: auto; /* 操作パネル内がはみ出たらスクロール */
+    }
+
+    /* 全体レイアウトのスクロール設定 */
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow-y: scroll; /* ページスクロール可能 */
+    }
+}

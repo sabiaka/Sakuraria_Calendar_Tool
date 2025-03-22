@@ -1,14 +1,57 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>サクラリアカレンダージェネレーター</title>
+    <title>💖 ギャルポスタージェネレーター 💖</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <h1>サクラリアカレンダージェネレーター！</h1>
-</body>
+    <div class="container">
+        <!-- 左側（ポスタープレビュー） -->
+        <div class="preview">
+            <div class="poster">
+                <p class="text">💖 キラキラポスター 💖</p>
+            </div>
+        </div>
 
+        <!-- 右側（操作パネル） -->
+        <div class="controls">
+            <h2>操作パネル 🛠</h2>
+
+            
+            <!-- PNG出力ボタン -->
+            <button id="download">📷 PNG出力</button>
+
+            <!-- 日付選択 -->
+            <label for="week">📅 週を選択：</label>
+            <input type="week" id="week">
+
+            <!-- 7×2の表 -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td contenteditable="true"></td><td contenteditable="true"></td>
+                        <td contenteditable="true"></td><td contenteditable="true"></td>
+                        <td contenteditable="true"></td><td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true"></td><td contenteditable="true"></td>
+                        <td contenteditable="true"></td><td contenteditable="true"></td>
+                        <td contenteditable="true"></td><td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
 </html>
