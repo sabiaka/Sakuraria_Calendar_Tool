@@ -21,29 +21,67 @@ function updateCalendar() {
         daysOfWeek2.push(firstDayOfNextWeek.clone().add(i, 'days'));
     }
 
-    // テーブルの行を取得
-    const weekRow1 = document.getElementById('week1');
-    const weekRow2 = document.getElementById('week2');
+    // ドロップダウンの選択肢
+    const options = ["入学式", "ワールド", "アクティビティ", "外部講師", "休日", "卒業式"];
 
-    // 既存の <td> をクリア
-    weekRow1.innerHTML = '';
-    weekRow2.innerHTML = '';
+    // ローカルストレージキー
+    const STORAGE_KEY = {
+        DROPDOWN_VALUES: "dropdownValues",
+        IMAGE_DATA: "imageData"
+    };
 
-    // 1週目のカレンダーを生成
-    daysOfWeek1.forEach(date => {
-        const cell = document.createElement('td');
-        cell.textContent = date.date();
-        weekRow1.appendChild(cell);
-    });
+    // ドロップダウンメニューを作成する関数
+    function createDropdown(cellIndex, rowIndex) {
+        const dropdown = document.createElement("select");
+        dropdown.className = "customized styled"; // クラスを追加
+        options.forEach(option => {
+            const opt = document.createElement("option");
+            opt.value = option;
+            opt.textContent = option;
+            dropdown.appendChild(opt);
+        });
 
-    // 2週目のカレンダーを生成
-    daysOfWeek2.forEach(date => {
-        const cell = document.createElement('td');
-        cell.textContent = date.date();
-        weekRow2.appendChild(cell);
+        // ローカルストレージから選択値を復元
+        const savedValues = JSON.parse(localStorage.getItem(STORAGE_KEY.DROPDOWN_VALUES)) || {};
+        const cellKey = `${rowIndex}-${cellIndex}`;
+        if (savedValues[cellKey]) {
+            dropdown.value = savedValues[cellKey];
+        }
+
+        // 値が変更されたときにローカルストレージに保存
+        dropdown.addEventListener("change", () => {
+            const updatedValues = JSON.parse(localStorage.getItem(STORAGE_KEY.DROPDOWN_VALUES)) || {};
+            updatedValues[cellKey] = dropdown.value;
+            localStorage.setItem(STORAGE_KEY.DROPDOWN_VALUES, JSON.stringify(updatedValues));
+        });
+
+        return dropdown;
+    }
+
+    // 1週目と2週目の日付を縦方向に配置
+    [...Array(7).keys()].forEach(dayIndex => {
+        const dayRow = document.getElementById(`day${dayIndex + 1}`);
+
+        // 既存の <td> をクリア（曜日列は固定なので削除しない）
+        while (dayRow.children.length > 1) {
+            dayRow.removeChild(dayRow.lastChild);
+        }
+
+        // 1週目の日付
+        const cell1 = document.createElement('td');
+        cell1.textContent = daysOfWeek1[dayIndex].date();
+        const dropdown1 = createDropdown(dayIndex, 1); // ドロップダウンを作成
+        cell1.appendChild(dropdown1);
+        dayRow.appendChild(cell1);
+
+        // 2週目の日付
+        const cell2 = document.createElement('td');
+        cell2.textContent = daysOfWeek2[dayIndex].date();
+        const dropdown2 = createDropdown(dayIndex, 2); // ドロップダウンを作成
+        cell2.appendChild(dropdown2);
+        dayRow.appendChild(cell2);
     });
 }
-
 
 // カレンダーを初期化する関数
 function initializeCalendar() {
@@ -69,6 +107,7 @@ function initializeCalendar() {
 document.addEventListener('DOMContentLoaded', function () {
     initializeCalendar();
     updateCalendar();
+    restoreImage(); // 画像を復元
 });
 
 //ここから描画系＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
@@ -94,10 +133,26 @@ function insertImage(event) {
         img.onload = function () {
             originalImage = img;
             drawCanvas(); // キャンバスを再描画
+
+            // 画像データをローカルストレージに保存
+            localStorage.setItem(STORAGE_KEY.IMAGE_DATA, e.target.result);
         };
         img.src = e.target.result;
     };
     reader.readAsDataURL(file);
+}
+
+// ページ読み込み時にローカルストレージから画像を復元
+function restoreImage() {
+    const savedImageData = localStorage.getItem(STORAGE_KEY.IMAGE_DATA);
+    if (savedImageData) {
+        const img = new Image();
+        img.onload = function () {
+            originalImage = img;
+            drawCanvas(); // キャンバスを再描画
+        };
+        img.src = savedImageData;
+    }
 }
 
 // キャンバスを描画する関数

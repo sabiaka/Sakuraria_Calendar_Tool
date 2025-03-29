@@ -53,15 +53,6 @@ body {
     /* スケーリングの基準を左上に設定 */
 }
 
-/* テキスト（ポスター内） */
-.text {
-    font-size: calc(2vh * (297 / 210));
-    font-weight: bold;
-    color: #ff1493;
-    text-shadow: 2px 2px 5px rgba(255, 20, 147, 0.5);
-    white-space: nowrap;
-}
-
 /* 右側：操作パネル */
 .controls {
     width: 30%;
@@ -106,10 +97,12 @@ input[type="week"] {
     outline: none;
 }
 
+
+
 /* 表 */
 table {
     width: 100%;
-    max-width: 350px;
+    max-width: 400px;
     border-collapse: collapse;
     background: white;
     margin-top: 10px;
@@ -138,7 +131,7 @@ td:focus {
 }
 
 .logo {
-    width: 300px;
+    width: 200px;
     position: fixed;
     /* 画面に固定 */
     bottom: 20px;
@@ -147,7 +140,8 @@ td:focus {
 
 /* 画像挿入ボタン */
 input[type="file"] {
-    display: none; /* ファイル選択ボタンを非表示 */
+    display: none;
+    /* ファイル選択ボタンを非表示 */
 }
 
 label[for="image-upload"] {
@@ -169,8 +163,132 @@ label[for="image-upload"]:hover {
 }
 
 /* 画面が狭いときは縦並びに */
-/* 画面が狭いときは縦並びに */
-@media (max-width: 1000px) {
+@media (max-width: 1020px) {
+    .container {
+        flex-direction: column;
+        height: auto;
+        /* 自動調整 */
+    }
+
+    .preview,
+    .controls {
+        width: 100%;
+        height: auto;
+        /* 高さを自動調整 */
+    }
+
+    /* ポスタープレビュー */
+    .preview {
+        flex: 1;
+        /* 余分なスペースを占める */
+        height: auto;
+        padding: 20px 0;
+    }
+
+    /* 操作パネル */
+    .controls {
+        flex: 1;
+        /* 余分なスペースを占める */
+        height: auto;
+        overflow-y: auto;
+        /* 操作パネル内がはみ出たらスクロール */
+    }
+
+    /* 全体レイアウトのスクロール設定 */
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow-y: scroll;
+        /* ページスクロール可能 */
+    }
+
+    .logo {
+        width: 300px;
+        position: static;
+    }
+}
+
+/* ドロップダウンリストのカスタマイズ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝ */
+
+/* カスタマイズに必須の設定 */
+
+.customized,
+::picker(select) {
+    appearance: base-select;
+    margin-left: 10px;
+}
+
+.text-emphasis {
+    color: #cf256d;
+}
+
+.styled {
+    width: 100px;
+    padding: 8px 16px;
+    border-color: #cf256d;
+
+    &:hover {
+        background-color: color-mix(in srgb, #cf256d 10%, transparent);
+    }
+}
+
+/* 選択肢のポップオーバーのスタイルを変更 */
+.styled::picker(select) {
+    border-color: #cf256d;
+    border-radius: 8px;
+    margin: 8px 0;
+    box-shadow: 4px 4px #ff67b3;
+    /* アニメーションも設定できる */
+    transition: scale 0.2s;
+}
+
+.styled::picker(select):hover {
+    scale: 1.05;
+}
+
+.styled {
+    &>option {
+        padding: 16px 8px;
+
+        &:hover {
+            background-color: color-mix(in srgb, #cf256d 10%, transparent);
+        }
+
+        &:checked {
+            color: #cf256d;
+        }
+    }
+}
+
+
+
+/* 横幅が小さい場合の操作パネルとプレビューの割合調整 ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
+@media (max-width: 1400px) {
+    .preview {
+        width: 65%;
+        /* プレビューの幅を縮小 */
+    }
+
+    .controls {
+        width: 35%;
+        /* 操作パネルの幅を拡大 */
+    }
+}
+
+@media (max-width: 1270px) {
+    .preview {
+        width: 60%;
+        /* プレビューの幅をさらに縮小 */
+    }
+
+    .controls {
+        width: 40%;
+        /* 操作パネルの幅をさらに拡大 */
+    }
+}
+
+@media (max-width: 1030px) {
     .container {
         flex-direction: column;
         height: auto;
