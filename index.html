@@ -17,19 +17,19 @@
     <div class="container">
         <!-- 左側（ポスタープレビュー） -->
         <div class="preview">
-            <div class="poster">
-                <p class="text">文字プレビュー</p>
-            </div>
+            <canvas id="posterCanvas"></canvas>
         </div>
 
         <!-- 右側（操作パネル） -->
         <div class="controls">
             <h2>操作パネル 🛠</h2>
 
-
             <!-- PNG出力ボタン -->
             <button id="download-png" class="download-button">ポスターをPNGで保存</button>
 
+            <!-- 画像挿入ボタン -->
+            <label for="image-upload">📷️ 画像を挿入</label>
+            <input type="file" id="image-upload" accept="image/*" onchange="insertImage(event)">
 
             <!-- 日付選択 -->
             <label for="week">📅 週を選択</label>
@@ -53,7 +53,6 @@
                     <tr id="week2"></tr>
                 </tbody>
             </table>
-
 
             <img src="images/1b3e5969a1455987.png" alt="サクラリアのロゴ" class="logo">
         </div>
