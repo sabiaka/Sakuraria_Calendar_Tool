@@ -1,3 +1,17 @@
+// ローカルストレージキー
+const STORAGE_KEY = {
+    DROPDOWN_VALUES: "dropdownValues",
+    IMAGE_DATA: "imageData"
+};
+
+// グローバル変数として定義
+window.daysOfWeek1 = [];
+window.daysOfWeek2 = [];
+
+// グローバルにドロップダウンリストのオプションを定義
+const dropdownOptions = ["入学式", "ワールド", "アクティビティ", "外部講師", "休日", "卒業式"];
+
+
 // カレンダーを生成する関数
 function updateCalendar() {
     const weekInput = document.getElementById('week').value;
@@ -9,26 +23,20 @@ function updateCalendar() {
     const firstDayOfWeek = moment(`${year}-01-01`).week(parseInt(week)).startOf('week');
 
     // 1週目の日曜日から土曜日までの日付を取得
-    const daysOfWeek1 = [];
+    daysOfWeek1 = [];
     for (let i = 0; i < 7; i++) {
         daysOfWeek1.push(firstDayOfWeek.clone().add(i, 'days'));
     }
 
     // 2週目（日曜日から土曜日まで）の日付を取得
     const firstDayOfNextWeek = firstDayOfWeek.clone().add(7, 'days');
-    const daysOfWeek2 = [];
+    daysOfWeek2 = [];
     for (let i = 0; i < 7; i++) {
         daysOfWeek2.push(firstDayOfNextWeek.clone().add(i, 'days'));
     }
 
     // ドロップダウンの選択肢
     const options = ["入学式", "ワールド", "アクティビティ", "外部講師", "休日", "卒業式"];
-
-    // ローカルストレージキー
-    const STORAGE_KEY = {
-        DROPDOWN_VALUES: "dropdownValues",
-        IMAGE_DATA: "imageData"
-    };
 
     // ドロップダウンメニューを作成する関数
     function createDropdown(cellIndex, rowIndex) {
@@ -53,6 +61,7 @@ function updateCalendar() {
             const updatedValues = JSON.parse(localStorage.getItem(STORAGE_KEY.DROPDOWN_VALUES)) || {};
             updatedValues[cellKey] = dropdown.value;
             localStorage.setItem(STORAGE_KEY.DROPDOWN_VALUES, JSON.stringify(updatedValues));
+            drawCanvas(); // キャンバスを描画
         });
 
         return dropdown;
@@ -81,6 +90,7 @@ function updateCalendar() {
         cell2.appendChild(dropdown2);
         dayRow.appendChild(cell2);
     });
+    drawCanvas(); // キャンバスを再描画
 }
 
 // カレンダーを初期化する関数
@@ -107,7 +117,9 @@ function initializeCalendar() {
 document.addEventListener('DOMContentLoaded', function () {
     initializeCalendar();
     updateCalendar();
+    // console.log(window.daysOfWeek1, window.daysOfWeek2); // ここでデータが入っているか確認！
     restoreImage(); // 画像を復元
+    drawCanvas(); // キャンバスを描画
 });
 
 //ここから描画系＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
@@ -156,21 +168,63 @@ function restoreImage() {
 }
 
 // キャンバスを描画する関数
+
 function drawCanvas() {
-    // 背景を白にする
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // 画像がある場合、描画
     if (originalImage) {
         ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
     }
 
-    // テキストを描画（仮）
     ctx.font = "100px 'Zen Maru Gothic', sans-serif";
     ctx.fillStyle = "#ff66b2";
     ctx.textAlign = "center";
     ctx.fillText("ポスタープレビュー", canvas.width / 2, 200);
+
+    drawCalendarOnCanvas(); // ここでカレンダー描画
+}
+
+function drawCalendarOnCanvas() {
+    const startX = 200;  // 左のマージン
+    const startY = 300;  // 上のマージン
+    const cellWidth = 800;  // セルの幅
+    const cellHeight = 200; // セルの高さ
+
+    const days = ["日", "月", "火", "水", "木", "金", "土"];
+
+    ctx.font = "100px 'Zen Maru Gothic', sans-serif";
+    ctx.fillStyle = "#333";
+    ctx.textAlign = "center";
+
+    // 枠線を描画
+    for (let row = 0; row <= 7; row++) {
+        let y = startY + row * cellHeight;
+        ctx.beginPath();
+        ctx.moveTo(startX, y);
+        ctx.lineTo(startX + cellWidth * 3, y);
+        ctx.stroke();
+    }
+    for (let col = 0; col <= 3; col++) {
+        let x = startX + col * cellWidth;
+        ctx.beginPath();
+        ctx.moveTo(x, startY);
+        ctx.lineTo(x, startY + cellHeight * 7);
+        ctx.stroke();
+    }
+
+    // 曜日を描画
+    for (let i = 0; i < 7; i++) {
+        ctx.fillText(days[i], startX + cellWidth / 2, startY + cellHeight * (i + 1) - 50);
+    }
+
+    // 日付を描画（updateCalendar のデータを反映）
+    if (window.daysOfWeek1 && window.daysOfWeek2) {
+        for (let i = 0; i < 7; i++) {
+            ctx.fillText(daysOfWeek1[i].date(), startX + cellWidth * 1.5, startY + cellHeight * (i + 1) - 50);
+            ctx.fillText(daysOfWeek2[i].date(), startX + cellWidth * 2.5, startY + cellHeight * (i + 1) - 50);
+        }
+    }
 }
 
 // PNGダウンロード
@@ -180,8 +234,4 @@ document.getElementById("download-png").addEventListener("click", function () {
     link.download = "poster.png";
     link.click();
 });
-
-// 初期描画
-drawCanvas();
-
 
