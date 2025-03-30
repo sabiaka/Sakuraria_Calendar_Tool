@@ -179,10 +179,30 @@ function drawCalendarOnCanvas() {
     const startY = 300;  // 上のマージン
     const dayColumnWidth = 300; // 曜日列の幅を小さく設定
     const cellWidth = 1100;  // 他のセルの幅
-    const cellHeight = 250; // セルの高さ
+    const cellHeight = 300; // セルの高さ
 
     const days = ["日", "月", "火", "水", "木", "金", "土"];
     const dropdownValues = JSON.parse(localStorage.getItem(STORAGE_KEY.DROPDOWN_VALUES)) || {}; // ローカルストレージから取得
+
+    // 表示変換マッピング
+    const displayMapping = {
+        "入学式": "入学式",
+        "ワールド": "クラス内交流",
+        "アクティビティ": "クラス内交流",
+        "外部講師": "外部講師",
+        "休日": "お休み",
+        "卒業式": "卒業式"
+    };
+
+    // サブタイトル変換マッピング
+    const subtitleMapping = {
+        "入学式": "はじめまして！",
+        "ワールド": "ワールド散策",
+        "アクティビティ": "アクティビティ",
+        "外部講師": "出演：",
+        "休日": "寝ろ",
+        "卒業式": "おつかれさま！"
+    };
 
     ctx.font = "100px 'Zen Maru Gothic', sans-serif";
     ctx.fillStyle = "#333";
@@ -228,21 +248,35 @@ function drawCalendarOnCanvas() {
     if (window.daysOfWeek1 && window.daysOfWeek2) {
         for (let i = 0; i < 7; i++) {
             // 1週目の日付とドロップダウン値
+            ctx.fillStyle = "#333"; // メインテキストの色
             ctx.textAlign = "left";
             ctx.font = "bold 150px 'Zen Maru Gothic', sans-serif"; // 大きめのフォントサイズと太字
             ctx.fillText(daysOfWeek1[i].date(), startX + dayColumnWidth + 70, startY + cellHeight * (i + 1) - cellHeight / 2 + 75);
 
             ctx.font = "100px 'Zen Maru Gothic', sans-serif"; // ドロップダウン値用フォントサイズ
-            const dropdownValue1 = dropdownValues[`1-${i}`] || ""; // 1週目の値
-            ctx.fillText(dropdownValue1, startX + dayColumnWidth + 300, startY + cellHeight * (i + 1) - cellHeight / 2 + 75);
+            const dropdownValue1 = displayMapping[dropdownValues[`1-${i}`]] || ""; // 1週目の値を変換
+            ctx.fillText(dropdownValue1, startX + dayColumnWidth + 300, startY + cellHeight * (i + 1) - cellHeight / 2 + 20);
+
+            // サブタイトルを描画
+            ctx.font = "80px 'Zen Maru Gothic', sans-serif"; // サブタイトル用フォントサイズ
+            ctx.fillStyle = "#666"; // サブタイトルの色
+            const subtitle1 = subtitleMapping[dropdownValues[`1-${i}`]] || ""; // 1週目のサブタイトルを変換
+            ctx.fillText(subtitle1, startX + dayColumnWidth + 300, startY + cellHeight * (i + 1) - cellHeight / 2 + 110);
 
             // 2週目の日付とドロップダウン値
+            ctx.fillStyle = "#333"; // メインテキストの色
             ctx.font = "bold 150px 'Zen Maru Gothic', sans-serif"; // 大きめのフォントサイズと太字
             ctx.fillText(daysOfWeek2[i].date(), startX + dayColumnWidth + cellWidth + 70, startY + cellHeight * (i + 1) - cellHeight / 2 + 75);
 
             ctx.font = "100px 'Zen Maru Gothic', sans-serif"; // ドロップダウン値用フォントサイズ
-            const dropdownValue2 = dropdownValues[`2-${i}`] || ""; // 2週目の値
-            ctx.fillText(dropdownValue2, startX + dayColumnWidth + cellWidth + 300, startY + cellHeight * (i + 1) - cellHeight / 2 + 75);
+            const dropdownValue2 = displayMapping[dropdownValues[`2-${i}`]] || ""; // 2週目の値を変換
+            ctx.fillText(dropdownValue2, startX + dayColumnWidth + cellWidth + 300, startY + cellHeight * (i + 1) - cellHeight / 2 + 20);
+
+            // サブタイトルを描画
+            ctx.font = "80px 'Zen Maru Gothic', sans-serif"; // サブタイトル用フォントサイズ
+            ctx.fillStyle = "#666"; // サブタイトルの色
+            const subtitle2 = subtitleMapping[dropdownValues[`2-${i}`]] || ""; // 2週目のサブタイトルを変換
+            ctx.fillText(subtitle2, startX + dayColumnWidth + cellWidth + 300, startY + cellHeight * (i + 1) - cellHeight / 2 + 110);
         }
     }
 }
