@@ -190,8 +190,8 @@ function insertImage(event) {
 // キャンバスを描画する関数
 
 function drawCanvas() {
-    console.log(localStorage.getItem(STORAGE_KEY.DROPDOWN_VALUES)); // 修正: 正しいキー名を使用
-    console.log(window.daysOfWeek1, window.daysOfWeek2); // ここでデータが入っているか確認！
+    // console.log(localStorage.getItem(STORAGE_KEY.DROPDOWN_VALUES)); // 修正: 正しいキー名を使用
+    // console.log(window.daysOfWeek1, window.daysOfWeek2); // ここでデータが入っているか確認！
 
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -211,14 +211,16 @@ function drawCanvas() {
     ctx.font = "100px 'Zen Maru Gothic', sans-serif";
     ctx.fillStyle = "#ff66b2";
     ctx.textAlign = "center";
-    ctx.fillText(monthTitle, canvas.width / 2, 200); // 月のタイトルを描画
 
-    drawCalendarOnCanvas(); // ここでカレンダー描画
+    // タイトルのY座標をキャンバスの下部に配置
+    const titleY = canvas.height - 2300; // キャンバス下部から少し上に調整
+    ctx.fillText(monthTitle, canvas.width / 2, titleY);
+
+    drawCalendarOnCanvas(titleY + 50); // タイトルの下にテーブルを描画
 }
 
-function drawCalendarOnCanvas() {
+function drawCalendarOnCanvas(startY) {
     const startX = 200;  // 左のマージン
-    const startY = 300;  // 上のマージン
     const dayColumnWidth = 300; // 曜日列の幅を小さく設定
     const cellWidth = 1100;  // 他のセルの幅
     const cellHeight = 300; // セルの高さ
@@ -357,5 +359,13 @@ document.getElementById("download-png").addEventListener("click", function () {
 
 document.addEventListener('DOMContentLoaded', function () {
     initializeCalendar();
-    updateCalendar();
+    document.fonts.ready.then(() => {
+        updateCalendar(); // フォントが読み込まれてからカレンダーを更新
+    });
+});
+
+window.addEventListener('pageshow', function () {
+    document.fonts.ready.then(() => {
+        updateCalendar(); // ブラウザバック時にもフォントが読み込まれてからカレンダーを更新
+    });
 });
