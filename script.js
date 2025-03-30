@@ -1,6 +1,7 @@
 // ローカルストレージキー
 const STORAGE_KEY = {
     DROPDOWN_VALUES: "dropdownValues",
+    TEACHER_NAMES: "teacherNames",
 };
 
 // グローバル変数として定義
@@ -9,7 +10,6 @@ window.daysOfWeek2 = [];
 
 // グローバルにドロップダウンリストのオプションを定義
 const dropdownOptions = ["入学式", "ワールド", "アクティビティ", "外部講師", "休日", "卒業式"];
-
 
 // カレンダーを生成する関数
 function updateCalendar() {
@@ -61,6 +61,7 @@ function updateCalendar() {
             updatedValues[cellKey] = dropdown.value;
             localStorage.setItem(STORAGE_KEY.DROPDOWN_VALUES, JSON.stringify(updatedValues));
             drawCanvas(); // キャンバスを描画
+            updateExternalTeachers(); // 外部講師入力欄を更新
         });
 
         return dropdown;
@@ -90,6 +91,47 @@ function updateCalendar() {
         dayRow.appendChild(cell2);
     });
     drawCanvas(); // キャンバスを再描画
+    updateExternalTeachers(); // 外部講師入力欄を更新
+}
+
+// 外部講師入力欄を更新する関数
+function updateExternalTeachers() {
+    const container = document.getElementById("external-teachers-container");
+    container.innerHTML = ""; // コンテナをクリア
+
+    const dropdownValues = JSON.parse(localStorage.getItem(STORAGE_KEY.DROPDOWN_VALUES)) || {};
+    const externalTeacherCells = Object.entries(dropdownValues)
+        .filter(([_, value]) => value === "外部講師") // "外部講師" のセルを抽出
+        .map(([key]) => key); // セルキーを取得
+
+    externalTeacherCells.forEach((cellKey, index) => {
+        const label = document.createElement("label");
+        label.setAttribute("for", `external-teacher${index + 1}`);
+        label.textContent = `外部講師${index + 1}`;
+        container.appendChild(label);
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.id = `external-teacher${index + 1}`;
+        input.placeholder = "講師名を入力";
+        input.className = "external-teacher-input";
+
+        // 入力イベントでキャンバスを再描画し、値をローカルストレージに保存
+        input.addEventListener("input", () => {
+            const teacherData = JSON.parse(localStorage.getItem(STORAGE_KEY.TEACHER_NAMES)) || {};
+            teacherData[cellKey] = input.value; // セルキーに対応する講師名を保存
+            localStorage.setItem(STORAGE_KEY.TEACHER_NAMES, JSON.stringify(teacherData));
+            drawCanvas();
+        });
+
+        // ローカルストレージから値を復元
+        const teacherData = JSON.parse(localStorage.getItem(STORAGE_KEY.TEACHER_NAMES)) || {};
+        if (teacherData[cellKey]) {
+            input.value = teacherData[cellKey];
+        }
+
+        container.appendChild(input);
+    });
 }
 
 // カレンダーを初期化する関数
@@ -183,6 +225,7 @@ function drawCalendarOnCanvas() {
 
     const days = ["日", "月", "火", "水", "木", "金", "土"];
     const dropdownValues = JSON.parse(localStorage.getItem(STORAGE_KEY.DROPDOWN_VALUES)) || {}; // ローカルストレージから取得
+    const teacherData = JSON.parse(localStorage.getItem(STORAGE_KEY.TEACHER_NAMES)) || {}; // 外部講師名を取得
 
     // 表示変換マッピング
     const displayMapping = {
@@ -260,7 +303,10 @@ function drawCalendarOnCanvas() {
             // サブタイトルを描画
             ctx.font = "80px 'Zen Maru Gothic', sans-serif"; // サブタイトル用フォントサイズ
             ctx.fillStyle = "#666"; // サブタイトルの色
-            const subtitle1 = subtitleMapping[dropdownValues[`1-${i}`]] || ""; // 1週目のサブタイトルを変換
+            let subtitle1 = subtitleMapping[dropdownValues[`1-${i}`]] || ""; // 1週目のサブタイトルを変換
+            if (dropdownValues[`1-${i}`] === "外部講師") {
+                subtitle1 += teacherData[`1-${i}`] || ""; // 外部講師名を追加
+            }
             ctx.fillText(subtitle1, startX + dayColumnWidth + 300, startY + cellHeight * (i + 1) - cellHeight / 2 + 110);
 
             // 2週目の日付とドロップダウン値
@@ -275,7 +321,10 @@ function drawCalendarOnCanvas() {
             // サブタイトルを描画
             ctx.font = "80px 'Zen Maru Gothic', sans-serif"; // サブタイトル用フォントサイズ
             ctx.fillStyle = "#666"; // サブタイトルの色
-            const subtitle2 = subtitleMapping[dropdownValues[`2-${i}`]] || ""; // 2週目のサブタイトルを変換
+            let subtitle2 = subtitleMapping[dropdownValues[`2-${i}`]] || ""; // 2週目のサブタイトルを変換
+            if (dropdownValues[`2-${i}`] === "外部講師") {
+                subtitle2 += teacherData[`2-${i}`] || ""; // 外部講師名を追加
+            }
             ctx.fillText(subtitle2, startX + dayColumnWidth + cellWidth + 300, startY + cellHeight * (i + 1) - cellHeight / 2 + 110);
         }
     }
@@ -283,6 +332,23 @@ function drawCalendarOnCanvas() {
 
 // PNGダウンロード
 document.getElementById("download-png").addEventListener("click", function () {
+    const dropdownValues = JSON.parse(localStorage.getItem(STORAGE_KEY.DROPDOWN_VALUES)) || {};
+    const teacherData = JSON.parse(localStorage.getItem(STORAGE_KEY.TEACHER_NAMES)) || {};
+
+    // 外部講師セルを取得
+    const externalTeacherCells = Object.entries(dropdownValues)
+        .filter(([_, value]) => value === "外部講師")
+        .map(([key]) => key);
+
+    // 入力が不足しているか確認
+    const missingTeachers = externalTeacherCells.some(cellKey => !teacherData[cellKey] || teacherData[cellKey].trim() === "");
+
+    if (missingTeachers) {
+        alert("外部講師がすべて入力されていないよ！");
+        return;
+    }
+
+    // PNG出力処理
     const link = document.createElement("a");
     link.href = canvas.toDataURL("image/png");
     link.download = "poster.png";

@@ -62,6 +62,8 @@ body {
     align-items: center;
     background: #ffe4e1;
     box-shadow: -5px 0px 10px rgba(255, 105, 180, 0.3);
+    overflow-y: auto; /* 縦スクロールを有効化 */
+    max-height: 100vh; /* 画面全体の高さに収める */
 }
 
 /* 見出し */
@@ -160,6 +162,29 @@ label[for="image-upload"] {
 
 label[for="image-upload"]:hover {
     background: #ff1493;
+}
+
+/* 外部講師入力欄 */
+#external-teachers-container{
+    margin-top: 20px;
+}
+
+.external-teacher-input {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border: 2px solid #ff66b2;
+    border-radius: 5px;
+    margin-top: 5px;
+    outline: none;
+    background: #fff;
+    box-shadow: 0px 2px 4px rgba(255, 105, 180, 0.3);
+}
+
+.external-teacher-input:focus {
+    border-color: #ff1493;
+    background: #ffe6ee;
+    box-shadow: 0px 4px 6px rgba(255, 20, 147, 0.5);
 }
 
 /* 画面が狭いときは縦並びに */
