@@ -1,7 +1,6 @@
 // ローカルストレージキー
 const STORAGE_KEY = {
     DROPDOWN_VALUES: "dropdownValues",
-    IMAGE_DATA: "imageData"
 };
 
 // グローバル変数として定義
@@ -114,14 +113,6 @@ function initializeCalendar() {
     document.getElementById('week').value = weekValue;
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    initializeCalendar();
-    updateCalendar();
-    // console.log(window.daysOfWeek1, window.daysOfWeek2); // ここでデータが入っているか確認！
-    restoreImage(); // 画像を復元
-    drawCanvas(); // キャンバスを描画
-});
-
 //ここから描画系＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
 const canvas = document.getElementById("posterCanvas");
@@ -154,22 +145,12 @@ function insertImage(event) {
     reader.readAsDataURL(file);
 }
 
-// ページ読み込み時にローカルストレージから画像を復元
-function restoreImage() {
-    const savedImageData = localStorage.getItem(STORAGE_KEY.IMAGE_DATA);
-    if (savedImageData) {
-        const img = new Image();
-        img.onload = function () {
-            originalImage = img;
-            drawCanvas(); // キャンバスを再描画
-        };
-        img.src = savedImageData;
-    }
-}
-
 // キャンバスを描画する関数
 
 function drawCanvas() {
+    console.log(localStorage.getItem(STORAGE_KEY.DROPDOWN_VALUES)); // 修正: 正しいキー名を使用
+    console.log(window.daysOfWeek1, window.daysOfWeek2); // ここでデータが入っているか確認！
+
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -177,10 +158,18 @@ function drawCanvas() {
         ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
     }
 
+    // 表示する月のタイトルを生成
+    let monthTitle = "";
+    if (window.daysOfWeek1.length > 0 && window.daysOfWeek2.length > 0) {
+        const startMonth = daysOfWeek1[0].month() + 1; // moment.jsは0始まりの月
+        const endMonth = daysOfWeek2[6].month() + 1;
+        monthTitle = startMonth === endMonth ? `${startMonth}月の予定表` : `${startMonth}~${endMonth}月の予定表`;
+    }
+
     ctx.font = "100px 'Zen Maru Gothic', sans-serif";
     ctx.fillStyle = "#ff66b2";
     ctx.textAlign = "center";
-    ctx.fillText("ポスタープレビュー", canvas.width / 2, 200);
+    ctx.fillText(monthTitle, canvas.width / 2, 200); // 月のタイトルを描画
 
     drawCalendarOnCanvas(); // ここでカレンダー描画
 }
@@ -188,25 +177,41 @@ function drawCanvas() {
 function drawCalendarOnCanvas() {
     const startX = 200;  // 左のマージン
     const startY = 300;  // 上のマージン
-    const cellWidth = 800;  // セルの幅
-    const cellHeight = 200; // セルの高さ
+    const dayColumnWidth = 300; // 曜日列の幅を小さく設定
+    const cellWidth = 1100;  // 他のセルの幅
+    const cellHeight = 250; // セルの高さ
 
     const days = ["日", "月", "火", "水", "木", "金", "土"];
+    const dropdownValues = JSON.parse(localStorage.getItem(STORAGE_KEY.DROPDOWN_VALUES)) || {}; // ローカルストレージから取得
 
     ctx.font = "100px 'Zen Maru Gothic', sans-serif";
     ctx.fillStyle = "#333";
     ctx.textAlign = "center";
 
+    // 背景色を描画
+    for (let row = 0; row < 7; row++) {
+        let y = startY + row * cellHeight;
+        if (row === 0) {
+            ctx.fillStyle = "#ffccdd"; // 一番上の行を赤
+        } else if (row === 6) {
+            ctx.fillStyle = "#cccfff"; // 一番下の行を青
+        } else {
+            ctx.fillStyle = "#fff"; // 他の行は白
+        }
+        ctx.fillRect(startX, y, dayColumnWidth + cellWidth * 2, cellHeight);
+    }
+
     // 枠線を描画
+    ctx.strokeStyle = "#000";
     for (let row = 0; row <= 7; row++) {
         let y = startY + row * cellHeight;
         ctx.beginPath();
         ctx.moveTo(startX, y);
-        ctx.lineTo(startX + cellWidth * 3, y);
+        ctx.lineTo(startX + dayColumnWidth + cellWidth * 2, y); // 横幅を調整
         ctx.stroke();
     }
     for (let col = 0; col <= 3; col++) {
-        let x = startX + col * cellWidth;
+        let x = startX + (col === 0 ? 0 : dayColumnWidth) + (col - 1) * cellWidth; // 曜日列の幅を適用
         ctx.beginPath();
         ctx.moveTo(x, startY);
         ctx.lineTo(x, startY + cellHeight * 7);
@@ -214,15 +219,30 @@ function drawCalendarOnCanvas() {
     }
 
     // 曜日を描画
+    ctx.fillStyle = "#333";
     for (let i = 0; i < 7; i++) {
-        ctx.fillText(days[i], startX + cellWidth / 2, startY + cellHeight * (i + 1) - 50);
+        ctx.fillText(days[i], startX + dayColumnWidth / 2, startY + cellHeight * (i + 1) - cellHeight / 2 + 50);
     }
 
-    // 日付を描画（updateCalendar のデータを反映）
+    // 日付とドロップダウン値を描画（updateCalendar のデータを反映）
     if (window.daysOfWeek1 && window.daysOfWeek2) {
         for (let i = 0; i < 7; i++) {
-            ctx.fillText(daysOfWeek1[i].date(), startX + cellWidth * 1.5, startY + cellHeight * (i + 1) - 50);
-            ctx.fillText(daysOfWeek2[i].date(), startX + cellWidth * 2.5, startY + cellHeight * (i + 1) - 50);
+            // 1週目の日付とドロップダウン値
+            ctx.textAlign = "left";
+            ctx.font = "bold 150px 'Zen Maru Gothic', sans-serif"; // 大きめのフォントサイズと太字
+            ctx.fillText(daysOfWeek1[i].date(), startX + dayColumnWidth + 70, startY + cellHeight * (i + 1) - cellHeight / 2 + 75);
+
+            ctx.font = "100px 'Zen Maru Gothic', sans-serif"; // ドロップダウン値用フォントサイズ
+            const dropdownValue1 = dropdownValues[`1-${i}`] || ""; // 1週目の値
+            ctx.fillText(dropdownValue1, startX + dayColumnWidth + 300, startY + cellHeight * (i + 1) - cellHeight / 2 + 75);
+
+            // 2週目の日付とドロップダウン値
+            ctx.font = "bold 150px 'Zen Maru Gothic', sans-serif"; // 大きめのフォントサイズと太字
+            ctx.fillText(daysOfWeek2[i].date(), startX + dayColumnWidth + cellWidth + 70, startY + cellHeight * (i + 1) - cellHeight / 2 + 75);
+
+            ctx.font = "100px 'Zen Maru Gothic', sans-serif"; // ドロップダウン値用フォントサイズ
+            const dropdownValue2 = dropdownValues[`2-${i}`] || ""; // 2週目の値
+            ctx.fillText(dropdownValue2, startX + dayColumnWidth + cellWidth + 300, startY + cellHeight * (i + 1) - cellHeight / 2 + 75);
         }
     }
 }
@@ -235,3 +255,7 @@ document.getElementById("download-png").addEventListener("click", function () {
     link.click();
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+    initializeCalendar();
+    updateCalendar();
+});
