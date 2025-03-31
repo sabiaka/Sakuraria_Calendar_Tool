@@ -62,7 +62,7 @@ body {
     align-items: center;
     background: #ffe4e1;
     box-shadow: -5px 0px 10px rgba(255, 105, 180, 0.3);
-    overflow-y: auto; /* 縦スクロールを有効化 */
+    overflow-y: auto !important; /* 縦スクロールを有効化 */
     max-height: 100vh; /* 画面全体の高さに収める */
 }
 
@@ -165,73 +165,42 @@ label[for="image-upload"]:hover {
 }
 
 /* 外部講師入力欄 */
-#external-teachers-container{
+#external-teachers-container {
     margin-top: 20px;
+    padding: 10px;
+    background: #fff0f5;
+    border: 2px solid #ff66b2;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(255, 105, 180, 0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* 各入力欄の間隔を設定 */
 }
 
-.external-teacher-input {
+#external-teachers-container label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ff1493;
+    text-shadow: 1px 1px 3px rgba(255, 20, 147, 0.3);
+}
+
+#external-teachers-container input[type="text"] {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     font-size: 16px;
     border: 2px solid #ff66b2;
     border-radius: 5px;
-    margin-top: 5px;
     outline: none;
     background: #fff;
     box-shadow: 0px 2px 4px rgba(255, 105, 180, 0.3);
+    transition: all 0.3s ease;
 }
 
-.external-teacher-input:focus {
+#external-teachers-container input[type="text"]:focus {
     border-color: #ff1493;
     background: #ffe6ee;
     box-shadow: 0px 4px 6px rgba(255, 20, 147, 0.5);
-}
-
-/* 画面が狭いときは縦並びに */
-@media (max-width: 1020px) {
-    .container {
-        flex-direction: column;
-        height: auto;
-        /* 自動調整 */
-    }
-
-    .preview,
-    .controls {
-        width: 100%;
-        height: auto;
-        /* 高さを自動調整 */
-    }
-
-    /* ポスタープレビュー */
-    .preview {
-        flex: 1;
-        /* 余分なスペースを占める */
-        height: auto;
-        padding: 20px 0;
-    }
-
-    /* 操作パネル */
-    .controls {
-        flex: 1;
-        /* 余分なスペースを占める */
-        height: auto;
-        overflow-y: auto;
-        /* 操作パネル内がはみ出たらスクロール */
-    }
-
-    /* 全体レイアウトのスクロール設定 */
-    body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        overflow-y: scroll;
-        /* ページスクロール可能 */
-    }
-
-    .logo {
-        width: 300px;
-        position: static;
-    }
+    transform: scale(1.02);
 }
 
 /* ドロップダウンリストのカスタマイズ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝ */
@@ -338,8 +307,7 @@ label[for="image-upload"]:hover {
         flex: 1;
         /* 余分なスペースを占める */
         height: auto;
-        overflow-y: auto;
-        /* 操作パネル内がはみ出たらスクロール */
+        overflow-y: visible;
     }
 
     /* 全体レイアウトのスクロール設定 */

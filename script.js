@@ -34,14 +34,11 @@ function updateCalendar() {
         daysOfWeek2.push(firstDayOfNextWeek.clone().add(i, 'days'));
     }
 
-    // ドロップダウンの選択肢
-    const options = ["入学式", "ワールド", "アクティビティ", "外部講師", "休日", "卒業式"];
-
     // ドロップダウンメニューを作成する関数
     function createDropdown(cellIndex, rowIndex) {
         const dropdown = document.createElement("select");
         dropdown.className = "customized styled"; // クラスを追加
-        options.forEach(option => {
+        dropdownOptions.forEach(option => {
             const opt = document.createElement("option");
             opt.value = option;
             opt.textContent = option;
@@ -199,6 +196,17 @@ function drawCanvas() {
     if (originalImage) {
         ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
     }
+
+    // 表示する年を生成
+    const weekInput = document.getElementById('week').value;
+    const year = weekInput ? weekInput.split('-W')[0] : "";
+
+    ctx.font = "200px 'Zen Maru Gothic', sans-serif";
+    ctx.fillStyle = "#333";
+    ctx.textAlign = "left";
+
+    // 年を左上に描画
+    ctx.fillText(year+"", 200, 350);
 
     // 表示する月のタイトルを生成
     let monthTitle = "";
