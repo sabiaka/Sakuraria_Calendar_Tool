@@ -262,85 +262,65 @@ function drawCalendarOnCanvas(startY) {
         "卒業式": "おつかれさま！"
     };
 
-    ctx.font = "100px 'Zen Maru Gothic', sans-serif";
-    ctx.fillStyle = "#333";
-    ctx.textAlign = "center";
-
-    // 背景色を描画
-    for (let row = 0; row < 7; row++) {
-        let y = startY + row * cellHeight;
-        if (row === 0) {
-            ctx.fillStyle = "#ffccdd"; // 一番上の行を赤
-        } else if (row === 6) {
-            ctx.fillStyle = "#cccfff"; // 一番下の行を青
-        } else {
-            ctx.fillStyle = "#fff"; // 他の行は白
-        }
-        ctx.fillRect(startX, y, dayColumnWidth + cellWidth * 2, cellHeight);
+    // ストライプ背景を描画
+    for (let i = 0; i < 7; i++) {
+        ctx.fillStyle = i % 2 === 0 ? "hsla(174, 100.00%, 92.40%, 0.73)" : "rgba(255, 255, 255, 0.73)"; // ストライプの色を交互に設定
+        ctx.fillRect(startX + dayColumnWidth, startY + i * cellHeight, cellWidth * 2, cellHeight); // 曜日列を除く部分を描画
     }
 
-    // 枠線を描画
-    ctx.strokeStyle = "#000";
-    for (let row = 0; row <= 7; row++) {
-        let y = startY + row * cellHeight;
-        ctx.beginPath();
-        ctx.moveTo(startX, y);
-        ctx.lineTo(startX + dayColumnWidth + cellWidth * 2, y); // 横幅を調整
-        ctx.stroke();
-    }
-    for (let col = 0; col <= 3; col++) {
-        let x = startX + (col === 0 ? 0 : dayColumnWidth) + (col - 1) * cellWidth; // 曜日列の幅を適用
-        ctx.beginPath();
-        ctx.moveTo(x, startY);
-        ctx.lineTo(x, startY + cellHeight * 7);
-        ctx.stroke();
+    // 一番左の行の背景色を設定
+    for (let i = 0; i < 7; i++) {
+        ctx.fillStyle = "#dfe642"; // 一番左の行の背景色を設定
+        ctx.fillRect(startX, startY + i * cellHeight, dayColumnWidth, cellHeight);
     }
 
     // 曜日を描画
-    ctx.fillStyle = "#333";
+    ctx.font = "bold 100px 'Zen Maru Gothic', sans-serif"; // フォントサイズを大きく
+    ctx.fillStyle = "#323232"; // 曜日を黒に設定
+    ctx.textAlign = "center";
     for (let i = 0; i < 7; i++) {
-        ctx.fillText(days[i], startX + dayColumnWidth / 2, startY + cellHeight * (i + 1) - cellHeight / 2 + 50);
+        ctx.fillText(days[i], startX + dayColumnWidth / 2, startY + cellHeight * (i + 1) - cellHeight / 2 + 40);
     }
 
-    // 日付とドロップダウン値を描画（updateCalendar のデータを反映）
+    // 日付とドロップダウン値を描画
     if (window.daysOfWeek1 && window.daysOfWeek2) {
         for (let i = 0; i < 7; i++) {
             // 1週目の日付とドロップダウン値
-            ctx.fillStyle = "#333"; // メインテキストの色
+            ctx.fillStyle = "#323232"; // メインテキストを黒に設定
             ctx.textAlign = "left";
-            ctx.font = "bold 150px 'Zen Maru Gothic', sans-serif"; // 大きめのフォントサイズと太字
-            ctx.fillText(daysOfWeek1[i].date(), startX + dayColumnWidth + 70, startY + cellHeight * (i + 1) - cellHeight / 2 + 75);
+            ctx.font = "bold 150px 'Zen Maru Gothic', sans-serif";
+            ctx.fillText(daysOfWeek1[i].date(), startX + dayColumnWidth + 50, startY + cellHeight * (i + 1) - cellHeight / 2 + 60);
 
-            ctx.font = "100px 'Zen Maru Gothic', sans-serif"; // ドロップダウン値用フォントサイズ
-            const dropdownValue1 = displayMapping[dropdownValues[`1-${i}`]] || ""; // 1週目の値を変換
-            ctx.fillText(dropdownValue1, startX + dayColumnWidth + 300, startY + cellHeight * (i + 1) - cellHeight / 2 + 20);
+            ctx.font = "100px 'Zen Maru Gothic', sans-serif";
+            const dropdownValue1 = displayMapping[dropdownValues[`1-${i}`]] || "";
+            ctx.fillText(dropdownValue1, startX + dayColumnWidth + 250, startY + cellHeight * (i + 1) - cellHeight / 2 + 20);
 
             // サブタイトルを描画
-            ctx.font = "80px 'Zen Maru Gothic', sans-serif"; // サブタイトル用フォントサイズ
-            ctx.fillStyle = "#666"; // サブタイトルの色
-            let subtitle1 = subtitleMapping[dropdownValues[`1-${i}`]] || ""; // 1週目のサブタイトルを変換
+            ctx.font = "80px 'Zen Maru Gothic', sans-serif";
+            ctx.fillStyle = "#666"; // サブタイトルを淡い色に変更
+            let subtitle1 = subtitleMapping[dropdownValues[`1-${i}`]] || "";
             if (dropdownValues[`1-${i}`] === "外部講師") {
-                subtitle1 += teacherData[`1-${i}`] || ""; // 外部講師名を追加
+                subtitle1 += teacherData[`1-${i}`] || "";
             }
-            ctx.fillText(subtitle1, startX + dayColumnWidth + 300, startY + cellHeight * (i + 1) - cellHeight / 2 + 110);
+            ctx.fillText(subtitle1, startX + dayColumnWidth + 250, startY + cellHeight * (i + 1) - cellHeight / 2 + 100);
 
             // 2週目の日付とドロップダウン値
-            ctx.fillStyle = "#333"; // メインテキストの色
-            ctx.font = "bold 150px 'Zen Maru Gothic', sans-serif"; // 大きめのフォントサイズと太字
-            ctx.fillText(daysOfWeek2[i].date(), startX + dayColumnWidth + cellWidth + 70, startY + cellHeight * (i + 1) - cellHeight / 2 + 75);
+            ctx.fillStyle = "#323232";
+            ctx.font = "bold 150px 'Zen Maru Gothic', sans-serif";
+            ctx.fillText(daysOfWeek2[i].date(), startX + dayColumnWidth + cellWidth + 50, startY + cellHeight * (i + 1) - cellHeight / 2 + 60);
 
-            ctx.font = "100px 'Zen Maru Gothic', sans-serif"; // ドロップダウン値用フォントサイズ
-            const dropdownValue2 = displayMapping[dropdownValues[`2-${i}`]] || ""; // 2週目の値を変換
-            ctx.fillText(dropdownValue2, startX + dayColumnWidth + cellWidth + 300, startY + cellHeight * (i + 1) - cellHeight / 2 + 20);
+            ctx.font = "100px 'Zen Maru Gothic', sans-serif";
+            const dropdownValue2 = displayMapping[dropdownValues[`2-${i}`]] || "";
+            ctx.fillText(dropdownValue2, startX + dayColumnWidth + cellWidth + 250, startY + cellHeight * (i + 1) - cellHeight / 2 + 20);
 
             // サブタイトルを描画
-            ctx.font = "80px 'Zen Maru Gothic', sans-serif"; // サブタイトル用フォントサイズ
-            ctx.fillStyle = "#666"; // サブタイトルの色
-            let subtitle2 = subtitleMapping[dropdownValues[`2-${i}`]] || ""; // 2週目のサブタイトルを変換
+            ctx.font = "80px 'Zen Maru Gothic', sans-serif";
+            ctx.fillStyle = "#666";
+            let subtitle2 = subtitleMapping[dropdownValues[`2-${i}`]] || "";
             if (dropdownValues[`2-${i}`] === "外部講師") {
-                subtitle2 += teacherData[`2-${i}`] || ""; // 外部講師名を追加
+                subtitle2 += teacherData[`2-${i}`] || "";
             }
-            ctx.fillText(subtitle2, startX + dayColumnWidth + cellWidth + 300, startY + cellHeight * (i + 1) - cellHeight / 2 + 110);
+            ctx.fillText(subtitle2, startX + dayColumnWidth + cellWidth + 250, startY + cellHeight * (i + 1) - cellHeight / 2 + 100);
         }
     }
 }
