@@ -175,21 +175,27 @@ function insertImage(event) {
         img.onload = function () {
             originalImage = img;
             drawCanvas(); // キャンバスを再描画
-
-            // 画像データをローカルストレージに保存
-            localStorage.setItem(STORAGE_KEY.IMAGE_DATA, e.target.result);
         };
         img.src = e.target.result;
     };
     reader.readAsDataURL(file);
 }
 
+// ページ読み込み時に画像をセットする関数
+function setDefaultImage() {
+    // デフォルトの画像パスを指定
+    const defaultImagePath = "images/電脳楽舎-サクラリア (1).png"; // ここに画像のファイルパスを指定
+    const img = new Image();
+    img.onload = function () {
+        originalImage = img;
+        drawCanvas(); // キャンバスを再描画
+    };
+    img.src = defaultImagePath;
+}
+
 // キャンバスを描画する関数
 
 function drawCanvas() {
-    // console.log(localStorage.getItem(STORAGE_KEY.DROPDOWN_VALUES)); // 修正: 正しいキー名を使用
-    // console.log(window.daysOfWeek1, window.daysOfWeek2); // ここでデータが入っているか確認！
-
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -201,30 +207,29 @@ function drawCanvas() {
     const weekInput = document.getElementById('week').value;
     const year = weekInput ? weekInput.split('-W')[0] : "";
 
-    ctx.font = "200px 'Zen Maru Gothic', sans-serif";
-    ctx.fillStyle = "#333";
+    ctx.font = "bold 330px 'Zen Maru Gothic', sans-serif"; // 太字に変更
+    ctx.fillStyle = "#FFFFFF";
     ctx.textAlign = "left";
 
-    // 年を左上に描画
-    ctx.fillText(year+"", 200, 350);
+    // 年を描画
+    ctx.fillText(year + "", 1900, 1070);
 
     // 表示する月のタイトルを生成
     let monthTitle = "";
     if (window.daysOfWeek1.length > 0 && window.daysOfWeek2.length > 0) {
-        const startMonth = daysOfWeek1[0].month() + 1; // moment.jsは0始まりの月
-        const endMonth = daysOfWeek2[6].month() + 1;
-        monthTitle = startMonth === endMonth ? `${startMonth}月の予定表` : `${startMonth}~${endMonth}月の予定表`;
+        const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+        const startMonth = monthNames[daysOfWeek1[0].month()]; // moment.jsは0始まりの月
+        const endMonth = monthNames[daysOfWeek2[6].month()];
+        monthTitle = startMonth === endMonth ? `${startMonth}` : `${startMonth},${endMonth} `;
     }
 
-    ctx.font = "100px 'Zen Maru Gothic', sans-serif";
-    ctx.fillStyle = "#ff66b2";
-    ctx.textAlign = "center";
+    ctx.font = "bold 200px 'Zen Maru Gothic', sans-serif"; // 太字に変更
+    ctx.fillStyle = "#ffffff";
+    ctx.textAlign = "left";
 
-    // タイトルのY座標をキャンバスの下部に配置
-    const titleY = canvas.height - 2300; // キャンバス下部から少し上に調整
-    ctx.fillText(monthTitle, canvas.width / 2, titleY);
+    ctx.fillText(monthTitle, 1900, 760);
 
-    drawCalendarOnCanvas(titleY + 50); // タイトルの下にテーブルを描画
+    drawCalendarOnCanvas(canvas.height - 2500); // タイトルの下にテーブルを描画
 }
 
 function drawCalendarOnCanvas(startY) {
@@ -233,7 +238,7 @@ function drawCalendarOnCanvas(startY) {
     const cellWidth = 1100;  // 他のセルの幅
     const cellHeight = 300; // セルの高さ
 
-    const days = ["日", "月", "火", "水", "木", "金", "土"];
+    const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
     const dropdownValues = JSON.parse(localStorage.getItem(STORAGE_KEY.DROPDOWN_VALUES)) || {}; // ローカルストレージから取得
     const teacherData = JSON.parse(localStorage.getItem(STORAGE_KEY.TEACHER_NAMES)) || {}; // 外部講師名を取得
 
@@ -367,6 +372,7 @@ document.getElementById("download-png").addEventListener("click", function () {
 
 document.addEventListener('DOMContentLoaded', function () {
     initializeCalendar();
+    setDefaultImage(); // デフォルト画像をセット
     document.fonts.ready.then(() => {
         updateCalendar(); // フォントが読み込まれてからカレンダーを更新
     });
