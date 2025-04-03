@@ -9,7 +9,7 @@ window.daysOfWeek1 = [];
 window.daysOfWeek2 = [];
 
 // グローバルにドロップダウンリストのオプションを定義
-const dropdownOptions = ["入学式", "ワールド", "アクティビティ", "外部講師", "休日", "卒業式"];
+const dropdownOptions = ["未選択","入学式", "ワールド", "アクティビティ", "外部講師", "休日", "卒業式"];
 
 // カレンダーを生成する関数
 function updateCalendar() {
@@ -258,7 +258,7 @@ function drawCalendarOnCanvas(startY) {
         "ワールド": "ワールド散策",
         "アクティビティ": "アクティビティ",
         "外部講師": "出演：",
-        "休日": "寝ろ",
+        "休日": "休息タイム",
         "卒業式": "おつかれさま！"
     };
 
