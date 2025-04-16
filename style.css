@@ -206,11 +206,13 @@ label[for="image-upload"]:hover {
 /* ドロップダウンリストのカスタマイズ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝ */
 
 /* カスタマイズに必須の設定 */
-
 .customized,
 ::picker(select) {
     appearance: base-select;
     margin-left: 10px;
+    white-space: nowrap; /* 折り返しを防止 */
+    overflow: hidden; /* はみ出した部分を隠す */
+    text-overflow: ellipsis; /* はみ出した部分を省略記号にする */
 }
 
 .text-emphasis {
